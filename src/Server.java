@@ -128,6 +128,7 @@ public class Server implements Runnable{
 					if(!users.get(rand).isSpy())
 					{
 						users.get(rand).setSpy();
+						System.out.println(users.get(rand).getUsername()+" is a spy");
 						spys.add(users.get(rand));
 					}
 				}
