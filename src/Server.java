@@ -198,6 +198,23 @@ public class Server implements Runnable{
 		catch (Exception e){
 			e.printStackTrace();
 		}
+		int leaderpos=0;
+		for(int i=0;i<5;i++)
+		{
+			users.get(leaderpos%users.size()).setLeader(true);
+			users.get((leaderpos-1)%users.size()).setLeader(false);
+			try{
+				String returnCode="lead"+(char)13;
+				BufferedOutputStream os=new BufferedOutputStream(users.get(leaderpos%users.size()).getSocket().getOutputStream());
+				OutputStreamWriter osw=new OutputStreamWriter(os,"US-ASCII");
+				osw.write(returnCode);
+				osw.flush();
+			}
+			catch(Exception e)
+			{
+				System.out.println(e);
+			}
+		}
 	}
 	public void run() {
 		if(acceptingnewconnections){
