@@ -126,7 +126,7 @@ public class Server implements Runnable{
 				ArrayList<user>spys=new ArrayList<user>();
 				while(spys.size()<spynum[indexpos])
 				{
-					int rand=(int)(Math.random()*6);
+					int rand=(int)(Math.random()*5);
 					if(!users.get(rand).isSpy())
 					{
 						users.get(rand).setSpy();
