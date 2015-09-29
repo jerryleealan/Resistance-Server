@@ -199,6 +199,7 @@ public class Server implements Runnable{
 			e.printStackTrace();
 		}
 		int leaderpos=0;
+		/*
 		for(int i=0;i<5;i++)
 		{
 			users.get(leaderpos%users.size()).setLeader(true);
@@ -215,6 +216,7 @@ public class Server implements Runnable{
 				System.out.println(e);
 			}
 		}
+		*/
 	}
 	public void run() {
 		if(acceptingnewconnections){
