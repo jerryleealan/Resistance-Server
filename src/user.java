@@ -3,11 +3,27 @@ public class user {
 	private String username;
 	private Socket socket;
 	private boolean spy;
-	public user (String user,Socket s)
+	private boolean missionleader;
+	private int ID;
+	public user (String user,Socket s, int i)
 	{
+		ID=i;
 		username=user;
 		socket=s;
 		spy=false;
+		missionleader=false;
+	}
+	public int id()
+	{
+		return ID;
+	}
+	public boolean isMissionLeader()
+	{
+		return missionleader;
+	}
+	public void setLeader(boolean b)
+	{
+		missionleader=b;
 	}
 	public void setSpy()
 	{

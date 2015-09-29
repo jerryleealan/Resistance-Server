@@ -145,7 +145,7 @@ public class Server implements Runnable{
 							returnCode="spy";
 							for(user v:spys)
 							{
-								if(!v.getUsername().equals(u.getUsername()))
+								if(!v.getUsername().equals(u.getUsername())||v.id()!=u.id())
 									returnCode+=" "+v.getUsername();
 							}
 							returnCode+=(char)13;
@@ -201,7 +201,7 @@ public class Server implements Runnable{
 	}
 	public void run() {
 		if(acceptingnewconnections){
-			user u=new user("Default",connection);
+			user u=new user("Default",connection, -1);
 			try {
 				BufferedInputStream is=new BufferedInputStream(connection.getInputStream());
 				isr=new InputStreamReader(is);
@@ -210,10 +210,10 @@ public class Server implements Runnable{
 				while((character=isr.read())!=13){
 					process.append((char)character);
 				}
-				u=new user(process.toString(),connection);
+				u=new user(process.toString(),connection, ID);
 				users.add(u);
 				hm.put(connection,u);
-				System.out.println(process);
+				System.out.println(process+" "+ID);
 
 				while(game)
 				{
