@@ -1,9 +1,11 @@
 import java.net.*;
+
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
 public class Server implements Runnable{
 	private Socket connection;
 	private int ID;
@@ -127,10 +129,11 @@ public class Server implements Runnable{
 				ArrayList<user>spys=new ArrayList<user>();
 				while(spys.size()<spynum[indexpos])
 				{
-					int rand=(int)(Math.random()*6);
+					int rand=(int)(Math.random()*5);
 					if(!users.get(rand).isSpy())
 					{
 						users.get(rand).setSpy();
+						System.out.println(users.get(rand).getUsername()+" is a spy");
 						spys.add(users.get(rand));
 					}
 				}
@@ -147,7 +150,7 @@ public class Server implements Runnable{
 							returnCode="spy";
 							for(user v:spys)
 							{
-								if(!v.getUsername().equals(u.getUsername()))
+								if(!v.getUsername().equals(u.getUsername())||v.id()!=u.id())
 									returnCode+=" "+v.getUsername();
 							}
 							returnCode+=(char)13;
@@ -201,10 +204,29 @@ public class Server implements Runnable{
 		catch (Exception e){
 			e.printStackTrace();
 		}
+		int leaderpos=0;
+		/*
+		for(int i=0;i<5;i++)
+		{
+			users.get(leaderpos%users.size()).setLeader(true);
+			users.get((leaderpos-1)%users.size()).setLeader(false);
+			try{
+				String returnCode="lead"+(char)13;
+				BufferedOutputStream os=new BufferedOutputStream(users.get(leaderpos%users.size()).getSocket().getOutputStream());
+				OutputStreamWriter osw=new OutputStreamWriter(os,"US-ASCII");
+				osw.write(returnCode);
+				osw.flush();
+			}
+			catch(Exception e)
+			{
+				System.out.println(e);
+			}
+		}
+		*/
 	}
 	public void run() {
 		if(acceptingnewconnections){
-			user u=new user("Default",connection);
+			user u=new user("Default",connection, -1);
 			try {
 				BufferedInputStream is=new BufferedInputStream(connection.getInputStream());
 				isr=new InputStreamReader(is);
@@ -213,10 +235,10 @@ public class Server implements Runnable{
 				while((character=isr.read())!=13){
 					process.append((char)character);
 				}
-				u=new user(process.toString(),connection);
+				u=new user(process.toString(),connection, ID);
 				users.add(u);
 				hm.put(connection,u);
-				System.out.println(process);
+				System.out.println(process+" "+ID);
 
 				while(game)
 				{
