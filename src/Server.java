@@ -1,5 +1,4 @@
 import java.net.*;
-
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
@@ -266,5 +265,4 @@ public class Server implements Runnable{
 			return;
 		}
 	}
-
 }
