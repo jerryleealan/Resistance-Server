@@ -1,8 +1,10 @@
 import java.net.*;
-
 import java.io.*;
 import java.util.*;
+import java.util.Queue;
+
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -17,6 +19,7 @@ public class Server implements Runnable{
 	private static ServerSocket socket1;
 	private static volatile ArrayList<user>users=new ArrayList<user>();
 	private static volatile HashMap<Socket,user>hm=new HashMap<Socket,user>();
+	private volatile Queue<String> input=new LinkedList<String>();
 	public Server(Socket s, int i)
 	{
 		this.connection=s;
@@ -201,24 +204,30 @@ public class Server implements Runnable{
 			e.printStackTrace();
 		}
 		int leaderpos=0;
-		/*
+		
 		for(int i=0;i<5;i++)
 		{
 			users.get(leaderpos%users.size()).setLeader(true);
-			users.get((leaderpos-1)%users.size()).setLeader(false);
+			if(leaderpos>0)
+				users.get((leaderpos-1)%users.size()).setLeader(false);
 			try{
 				String returnCode="lead"+(char)13;
 				BufferedOutputStream os=new BufferedOutputStream(users.get(leaderpos%users.size()).getSocket().getOutputStream());
 				OutputStreamWriter osw=new OutputStreamWriter(os,"US-ASCII");
 				osw.write(returnCode);
 				osw.flush();
+				for(user u: users)
+				{
+					returnCode="broadcast Mission "+i+" has begun. "+users.get(leaderpos%users.size()).getUsername()+" is Mission Leader"+(char)13;
+					osw.write(returnCode);
+					osw.flush();
+				}
 			}
 			catch(Exception e)
 			{
 				System.out.println(e);
 			}
 		}
-		*/
 	}
 	public void run() {
 		if(acceptingnewconnections){
@@ -235,22 +244,39 @@ public class Server implements Runnable{
 				users.add(u);
 				hm.put(connection,u);
 				System.out.println(process+" "+ID);
-
+				Thread t=new Thread(new Runnable(){
+					public void run()
+					{
+						try{
+							while(true)
+							{
+								StringBuffer instr=new StringBuffer();
+								int c=0;
+								while((c=isr.read())!=13)
+									instr.append((char) c);
+								input.offer(instr.toString());
+							}
+						}
+						catch (IOException e)
+						{
+							System.out.println(e);
+							return;
+						}
+					}
+				});
+				t.start();
 				while(game)
 				{
-					if(accepting &&accepting2)
+					while(input.isEmpty()){};
+					System.out.println("ClientInstruction recieved");
+					if(input.peek().equals("game"))
 					{
-						character=0;
-						process=new StringBuffer();
-						while((character=isr.read())!=13)
-						{
-							process.append((char)character);
-						}
-						
-						System.out.println(u.getUsername()+" "+process.toString());
-						accepting2=false;
-					}else if(!accepting)
-						accepting2=true;
+						input.poll();
+					}
+					else if(input.peek().equals("start"))
+					{
+						input.poll();
+					}
 				}
 			}
 			catch(Exception e)
