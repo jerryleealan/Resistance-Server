@@ -15,6 +15,9 @@ public class Server implements Runnable{
 	private static volatile boolean accepting=false;
 	private volatile boolean accepting2=true;
 	private static volatile boolean game=true;
+	
+	private static volatile ArrayList<String>actions;
+	
 	private InputStreamReader isr;
 	private static ServerSocket socket1;
 	private static volatile ArrayList<user>users=new ArrayList<user>();
@@ -167,6 +170,7 @@ public class Server implements Runnable{
 				}
 			}
 		});
+		//start mission 1?
 		frame.add(start);
 		frame.setVisible(true);
 		int port=1999;
@@ -288,5 +292,4 @@ public class Server implements Runnable{
 			return;
 		}
 	}
-
 }

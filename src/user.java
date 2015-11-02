@@ -45,5 +45,4 @@ public class user {
 	public void setSocket(Socket socket) {
 		this.socket = socket;
 	}
-	
 }
